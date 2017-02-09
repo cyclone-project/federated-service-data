@@ -1,22 +1,29 @@
-FROM centos:7
+FROM debian
 
 #will run apache
-CMD /usr/sbin/apachectl -DFOREGROUND
+CMD apache2ctl -D FOREGROUND
 
 #on port 80
 EXPOSE 80
 
-# httpd installation
-#RUN yum update -y && yum install -y httpd mod_ssl mod_wsgi nano && yum clean -y all
+RUN apt-get update && apt-get install -y \
+		apache2 \
+		nano \
+		wget \
+	&& wget --quiet --output-document=/tmp/oidc.deb https://github.com/pingidentity/mod_auth_openidc/releases/download/v1.8.8/libapache2-mod-auth-openidc_1.8.8-1_amd64.deb \
+	 ; dpkg -i /tmp/oidc.deb \
+	 ; apt-get install -fy \
+	&& dpkg -i /tmp/oidc.deb \
+	&& rm /tmp/oidc.deb \
+	&& rm -rf /var/lib/apt/lists/*
 
-# mod_auth_openidc installation
-#RUN yum update -y && yum install -y epel-release && yum -y --nogpgcheck localinstall https://github.com/pingidentity/mod_auth_openidc/releases/download/v1.8.8/mod_auth_openidc-1.8.8-1.el7.centos.x86_64.rpm && yum clean -y all
+RUN a2enmod \
+		auth_openidc \
+		ssl \
+		authz_groupfile \
+		headers \
+		rewrite \
+		proxy_wstunnel \
+		proxy \
+		proxy_http
 
-# all installation
-RUN yum update -y && yum install -y epel-release httpd && yum -y --nogpgcheck localinstall https://github.com/pingidentity/mod_auth_openidc/releases/download/v1.8.8/mod_auth_openidc-1.8.8-1.el7.centos.x86_64.rpm && yum clean -y all
-
-# config of the proxy
-#COPY ./proxy.conf /etc/httpd/conf.d/proxy.conf
-
-#allowed user
-#COPY ./apache_groups /etc/httpd/apache_groups
