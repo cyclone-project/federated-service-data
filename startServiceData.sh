@@ -58,6 +58,24 @@ then
 fi
 
 
+# Install graphic dependency in DATA_DIR $DATA_DIR
+UI_DIR=${DATA_DIR}/_h5ai
+H5AI_ZIP="h5ai-0.29.0.zip"
+
+if [ ! -d $UI_DIR ]; then 
+	echo "Install Web server interface."
+	wget --no-verbose https://release.larsjung.de/h5ai/${H5AI_ZIP} -P /tmp
+	unzip -q /tmp/${H5AI_ZIP} -d ${DATA_DIR}
+	rm /tmp/${H5AI_ZIP}
+
+	if [ -d $UI_DIR ]; then
+		echo "Sucessfully install Web server $H5AI_ZIP"
+	else
+		echo "Fail to install  Web server $H5AI_ZIP"
+	fi
+fi
+
+
 
 echo "to open $TARGET_PORT:\niptables -I INPUT 1 -p tcp -i docker0 -m tcp --dport $TARGET_PORT -j ACCEPT"
 
