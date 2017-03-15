@@ -49,7 +49,7 @@ if [ ! -e ./apache_groups ]
 then
 
   #ALLOWED_EMAIL_COMMA_SEPARATED_VALUES=${ALLOWED_EMAIL_COMMA_SEPARATED_VALUES:-john.doe@no.where, bowie@space.oddity}
-  if [ "$ALLOWED_EMAIL_SPACE_SEPARATED_VALUES" == "" ]
+  if [ "X$ALLOWED_EMAIL_SPACE_SEPARATED_VALUES" = "X" ]
   then
     echo "env var \$ALLOWED_EMAIL_SPACE_SEPARATED_VALUES must contains edugain email of allowed user"
     exit 1
@@ -63,6 +63,11 @@ UI_DIR=${DATA_DIR}/_h5ai
 H5AI_ZIP="h5ai-0.29.0.zip"
 
 if [ ! -d $UI_DIR ]; then 
+	if [ $( which unzip &> /dev/null ; echo $?) -ne 0 ]; then
+		echo "Install unzip package"
+		apt-get install --yes unzip &> /dev/null
+	fi
+
 	echo "Install Web server interface."
 	wget --no-verbose https://release.larsjung.de/h5ai/${H5AI_ZIP} -P /tmp
 	unzip -q /tmp/${H5AI_ZIP} -d ${DATA_DIR}
