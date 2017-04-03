@@ -15,6 +15,8 @@ DEAMON_OR_ITERACTIVE=${DEAMON_OR_ITERACTIVE:-$DEFAULT_DEAMON_OR_ITERACTIVE}
 SUDO_CMD=${SUDO_CMD:-sudo}
 LOG_DIR=${LOG_DIR:-/var/log/httpd-proxy-service-data}
 DATA_DIR=${DATA_DIR:-/root/mydisk}
+UI_DIR=${DATA_DIR}/_h5ai
+H5AI_ZIP="h5ai-0.29.0.zip"
 
 if [ ! -d $LOG_DIR ]
 then
@@ -59,13 +61,14 @@ fi
 
 
 # Install graphic dependency in DATA_DIR $DATA_DIR
-UI_DIR=${DATA_DIR}/_h5ai
-H5AI_ZIP="h5ai-0.29.0.zip"
-
 if [ ! -d $UI_DIR ]; then 
-	if [ $( which unzip &> /dev/null ; echo $?) -ne 0 ]; then
-		echo "Install unzip package"
-		apt-get install --yes unzip &> /dev/null
+        which unzip &> /dev/null
+        res=$?
+
+        # if [ $( which unzip &> /dev/null ; echo $?) -ne 0 ]; then
+        if [ $res -ne 0 ]; then
+                echo "Install unzip package res value is $res"
+                apt-get install --yes unzip &> /dev/null
 	fi
 
 	echo "Install Web server interface."
