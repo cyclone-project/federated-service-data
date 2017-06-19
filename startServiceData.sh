@@ -1,6 +1,7 @@
 #!/bin/sh
 DOCKER_IMAGE_OWNER=cyclone
 DOCKER_IMAGE_NAME=proxy-service-data
+FQDN=${FQDN:-$(curl http://169.254.169.254/latest/meta-data/public-ipv4 2>/dev/null)}
 FQDN=${FQDN:-$(              hostname -I | sed 's/ /\n/g' | grep -v 172.17 | head -n 1)}
 TARGET_FQDN=${TARGET_FQDN:-$(hostname -I | sed 's/ /\n/g' | grep    172.17 | head -n 1)}
 TARGET_PORT=${TARGET_PORT:-8080}
