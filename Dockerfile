@@ -1,4 +1,4 @@
-FROM debian
+FROM debian:8
 
 #will run apache
 CMD apache2ctl -D FOREGROUND
